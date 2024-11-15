@@ -1,0 +1,463 @@
+package Vista;
+
+import conexion.Conexion;
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+public class CRUD1 extends javax.swing.JFrame {
+
+    Conexion con = new Conexion();
+    Connection cn;
+    Statement st;
+    ResultSet rs;
+
+    int id;
+
+    DefaultTableModel modelo;
+
+    public CRUD1() {
+        initComponents();
+        Torreblanca_listar();
+
+        this.setLocationRelativeTo(null);
+        txtId.setEnabled(false);
+    }
+
+public void Torreblanca_listar() {
+    String sql = "select * from cliente";
+
+    try {
+        cn = con.getConexion();
+        st = cn.createStatement();
+        rs = st.executeQuery(sql);
+
+        // Inicializa el modelo aquí
+        modelo = (DefaultTableModel) jTable1.getModel();
+        modelo.setRowCount(0); // Limpia la tabla antes de listar
+
+        Object[] personaCrud = new Object[5];
+
+        while (rs.next()) {
+            personaCrud[0] = rs.getInt("id");
+            personaCrud[1] = rs.getString("numero_cuenta");
+            personaCrud[2] = rs.getString("nombre_cliente");
+            personaCrud[3] = rs.getString("saldo");
+            personaCrud[4] = rs.getString("tipo_cuenta");
+            modelo.addRow(personaCrud);
+        }
+
+        jTable1.setModel(modelo);
+
+    } catch (SQLException e) {
+        System.out.println("Error en el metodo listar" + e);
+    }
+}
+
+
+    public void Torreblanca_agregar() {
+        String cuenta = txtNum.getText();
+        String cliente = txtNom.getText();
+        String saldo = txtSaldo.getText();
+        String tipo = txtTipo.getText();
+
+        if (cuenta.equals("") || cliente.equals("") || saldo.equals("") || tipo.equals("")) {
+            JOptionPane.showMessageDialog(null, "Falta agregar los valores");
+        } else {
+            String sql = "INSERT INTO cliente (numero_cuenta, nombre_cliente, saldo, tipo_cuenta) VALUES ('" 
+                        + cuenta + "', '" + cliente + "', '" + saldo + "', '" + tipo + "')";
+
+            try {
+                cn = con.getConexion();
+                st = cn.createStatement();
+                st.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "Registro exitoso");
+                Torreblanca_limpiar();
+                Torreblanca_listar();
+
+            } catch (SQLException e) {
+                System.out.println("Error en el método agregar: " + e);
+            }
+        }
+    }
+
+    public void Torreblanca_modificar() {
+        String cuenta = txtNum.getText();
+        String cliente = txtNom.getText();
+        String saldo = txtSaldo.getText();
+        String tipo = txtTipo.getText();
+
+        if (cuenta.equals("") || cliente.equals("") || saldo.equals("") || tipo.equals("")) {
+            JOptionPane.showMessageDialog(null, "Falta agregar los valores");
+        } else {
+            String sql = "UPDATE cliente SET numero_cuenta = '" + cuenta + "', nombre_cliente = '" + cliente 
+                         + "', saldo = '" + saldo + "', tipo_cuenta = '" + tipo + "' WHERE id = " + id;
+
+            try {
+                cn = con.getConexion();
+                st = cn.createStatement();
+                st.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "Actualización exitosa");
+                Torreblanca_limpiar();
+                Torreblanca_listar();
+
+            } catch (SQLException e) {
+                System.out.println("Error en el método modificar: " + e);
+            }
+        }
+    }
+
+    public void Torreblanca_eliminar() {
+        int fila = jTable1.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+        } else {
+            String sql = "DELETE FROM cliente WHERE id = " + id;
+            try {
+                cn = con.getConexion();
+                st = cn.createStatement();
+                st.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "Cliente eliminado correctamente");
+                Torreblanca_limpiar();
+                Torreblanca_listar();
+
+            } catch (HeadlessException | SQLException e) {
+                System.out.println("Error en el método eliminar: " + e);
+            }
+        }
+    }
+
+public void Torreblanca_limpiar() {
+    if (modelo != null) {
+        modelo.setRowCount(0); // Limpia todas las filas de la tabla
+    }
+}
+
+
+    public void Torreblanca_nuevo() {
+        txtId.setText("");
+        txtNum.setText("");
+        txtNom.setText("");
+        txtSaldo.setText("");
+        txtTipo.setText("");
+
+        txtNum.requestFocus();
+    }
+
+    // Los demás métodos (initComponents, ActionListeners) permanecen sin cambios
+ 
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtId = new javax.swing.JTextField();
+        txtNum = new javax.swing.JTextField();
+        txtNom = new javax.swing.JTextField();
+        txtSaldo = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        txtTipo = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        agregar = new javax.swing.JButton();
+        listar = new javax.swing.JButton();
+        modificar = new javax.swing.JButton();
+        eliminar = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(153, 255, 51));
+
+        jLabel1.setText("ID");
+
+        jLabel2.setText("Numero Cuenta:");
+
+        jLabel3.setText("Nombre Cliente:");
+
+        jLabel4.setText("Saldo:");
+
+        txtId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIdActionPerformed(evt);
+            }
+        });
+
+        txtNum.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNumActionPerformed(evt);
+            }
+        });
+
+        txtNom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNomActionPerformed(evt);
+            }
+        });
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Numero Cuenta", "Nombre Cliente", "Saldo", "Tipo Cuenta"
+            }
+        ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setMinWidth(50);
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(50);
+            jTable1.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
+
+        jLabel5.setText("Tipo Cuenta");
+
+        jPanel1.setBackground(new java.awt.Color(153, 255, 204));
+
+        agregar.setText("AGREGAR");
+        agregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarActionPerformed(evt);
+            }
+        });
+
+        listar.setText("LISTAR");
+        listar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listarActionPerformed(evt);
+            }
+        });
+
+        modificar.setText("MODIFICAR");
+        modificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modificarActionPerformed(evt);
+            }
+        });
+
+        eliminar.setText("ELMINAR");
+        eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(listar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(modificar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(43, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(modificar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(listar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 593, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(87, 87, 87)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtId, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(txtNum, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtNom)
+                            .addComponent(txtSaldo)
+                            .addComponent(txtTipo, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(37, 37, 37)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(224, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(txtNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(txtNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(178, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void txtNumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNumActionPerformed
+
+    private void txtNomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNomActionPerformed
+
+    private void agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarActionPerformed
+        Torreblanca_agregar();
+        Torreblanca_listar();
+        Torreblanca_nuevo();
+    }//GEN-LAST:event_agregarActionPerformed
+
+    private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
+       Torreblanca_eliminar();
+        Torreblanca_listar();
+        Torreblanca_nuevo();
+    }//GEN-LAST:event_eliminarActionPerformed
+
+    private void listarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listarActionPerformed
+        Torreblanca_nuevo();
+    }//GEN-LAST:event_listarActionPerformed
+
+    private void modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarActionPerformed
+        Torreblanca_modificar();
+        Torreblanca_listar();
+        Torreblanca_nuevo();
+    }//GEN-LAST:event_modificarActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+       int fila = jTable1.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Fila no Seleccionada");
+        } else {
+            id = Integer.parseInt((String) jTable1.getValueAt(fila, 0).toString());
+            String cuenta = (String) jTable1.getValueAt(fila, 1);
+            String cliente  = (String) jTable1.getValueAt(fila, 2);
+            String saldo  = (String) jTable1.getValueAt(fila, 3);
+            String tipo  = (String) jTable1.getValueAt(fila, 4);
+            txtId.setText("" + id);
+            txtNum.setText(cuenta);
+            txtNom.setText(cliente);
+            txtSaldo.setText(saldo);
+            txtTipo.setText(tipo);
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdActionPerformed
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(CRUD1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(CRUD1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(CRUD1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(CRUD1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new CRUD1().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton agregar;
+    private javax.swing.JButton eliminar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JButton listar;
+    private javax.swing.JButton modificar;
+    private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txtNom;
+    private javax.swing.JTextField txtNum;
+    private javax.swing.JTextField txtSaldo;
+    private javax.swing.JTextField txtTipo;
+    // End of variables declaration//GEN-END:variables
+}
